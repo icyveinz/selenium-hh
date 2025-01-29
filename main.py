@@ -27,6 +27,23 @@ try:
     # Click on the chat cell
     chat_cell.click()
     print("Clicked on the chat cell with the 'Отказ' message!")
+
+    # Wait for the menu button to be present after opening the chat
+    menu_button_locator = (By.XPATH, '//button[@aria-label="menu" and @data-qa="chatik-chat-menu"]')
+    menu_button = wait.until(EC.presence_of_element_located(menu_button_locator))
+
+    # Click the menu button
+    menu_button.click()
+    print("Clicked on the menu button!")
+
+    # Wait for the "Leave Chat" button to be present
+    leave_chat_button_locator = (By.XPATH, '//button[@data-qa="chatik-chat-leave-chat"]')
+    leave_chat_button = wait.until(EC.presence_of_element_located(leave_chat_button_locator))
+
+    # Click the "Leave Chat" button
+    leave_chat_button.click()
+    print("Clicked on the 'Leave Chat' button!")
+
 except Exception as e:
     print(f"Error: {e}")
 
