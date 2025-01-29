@@ -1,45 +1,34 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import os
+from body_runner import driver
 
-# Get the current directory of the script
-current_directory = os.path.dirname(os.path.realpath(__file__))
-
-# Set the relative path to chromedriver.exe
-chromedriver_path = os.path.join(current_directory, 'chromedriver32.exe')  # Adjust the path if necessary
-
-# Create Chrome options
-options = Options()
-options.debugger_address = "localhost:9222"  # Use the address of the remote Chrome instance
-
-# Create a Service object and pass the path to chromedriver
-service = Service(chromedriver_path)
-
-# Pass the Service and Options objects to the Chrome WebDriver
-driver = webdriver.Chrome(service=service, options=options)
-
-# Open the website
-driver.get("https://www.hh.ru")
+driver.get("https://chatik.hh.ru/?hhtmSource=chat_page&hhtmFrom=chat")
 print(driver.title)
 
-# Wait for all buttons to be present
-wait = WebDriverWait(driver, 10)  # Wait for up to 10 seconds
-buttons = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//button[@class="container--j4NR0XcPvN4DXL8p" and @data-qa="link"]')))
+wait = WebDriverWait(driver, 10)
 
-# Print all buttons found
-print(f"Total buttons found: {len(buttons)}")
-for i, button in enumerate(buttons):
-    print(f"Button {i + 1}: {button.get_attribute('outerHTML')}")
+# Locate all chat cells
+chat_cells_locator = (By.CLASS_NAME, 'oWKN7Ez___chat-cell')
+wait.until(EC.presence_of_all_elements_located(chat_cells_locator))
 
-# Example of interacting with the second button (if it exists)
-if len(buttons) > 1:
-    second_button = buttons[4]
-    second_button.click()  # Click the second button
-    print("Second button clicked successfully!")
+# Locate the last message containing the "Отказ" text
+message_locator = (
+By.XPATH, './/div[contains(@class, "mnIHQ0E___last-message AkDJdek___last-message-color_red") and text()="Отказ"]')
 
-# You can add more actions or close the browser later
+# Try to find the message and click the corresponding chat cell
+try:
+    # Wait for the message to be present
+    last_message_element = wait.until(EC.presence_of_element_located(message_locator))
+
+    # Find the ancestor chat cell containing the last message
+    chat_cell = last_message_element.find_element(By.XPATH, './ancestor::a[contains(@class, "oWKN7Ez___chat-cell")]')
+
+    # Click on the chat cell
+    chat_cell.click()
+    print("Clicked on the chat cell with the 'Отказ' message!")
+except Exception as e:
+    print(f"Error: {e}")
+
+# Optionally, you can add more actions or close the browser
 # driver.quit()
