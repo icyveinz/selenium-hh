@@ -11,6 +11,10 @@ wait = WebDriverWait(driver, 10)
 # Loop to process all chats with the "Отказ" message
 while True:
     try:
+        filter_div_locator = (By.CSS_SELECTOR, 'div.BUagpy6___filter-item')
+        filter_div = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(filter_div_locator))
+        filter_div.click()
+
         # Locate all chat cells
         chat_cells_locator = (By.CLASS_NAME, 'oWKN7Ez___chat-cell')
         chat_cells = wait.until(EC.presence_of_all_elements_located(chat_cells_locator))
