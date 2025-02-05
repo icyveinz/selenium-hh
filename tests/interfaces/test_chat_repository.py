@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from selenium.webdriver import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from enitites.chat import Chat
@@ -10,22 +9,17 @@ from interfaces.chat_repository import ChatRepository
 
 @pytest.fixture
 def mock_driver():
-    """Mock Selenium WebDriver."""
     driver = MagicMock(spec=WebDriver)
     return driver
 
 
 @pytest.fixture
 def chat_repo(mock_driver):
-    """Fixture for ChatRepository instance."""
     return ChatRepository(mock_driver)
 
 
 def test_set_to_unread(chat_repo, mock_driver):
-    """Test set_to_unread clicks the correct filter div."""
     mock_element = MagicMock(spec=WebElement)
-
-    # Mock WebDriverWait to return the mock element
     with patch("time.sleep"), patch("selenium.webdriver.support.ui.WebDriverWait.until") as mock_wait:
         mock_wait.return_value = mock_element
 
@@ -36,7 +30,6 @@ def test_set_to_unread(chat_repo, mock_driver):
 
 
 def test_get_all_chats(chat_repo, mock_driver):
-    """Test get_all_chats returns a list of Chat objects."""
     mock_element = MagicMock(spec=WebElement)
     mock_driver.find_elements.return_value = [mock_element, mock_element]
 
@@ -47,7 +40,6 @@ def test_get_all_chats(chat_repo, mock_driver):
 
 
 def test_leave_chat(chat_repo, mock_driver):
-    """Test leave_chat clicks the menu and leave buttons."""
     mock_menu_button = MagicMock(spec=WebElement)
     mock_leave_button = MagicMock(spec=WebElement)
 
